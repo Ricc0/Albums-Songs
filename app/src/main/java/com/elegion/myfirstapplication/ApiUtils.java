@@ -54,8 +54,8 @@ public class ApiUtils {
                     .baseUrl(BuildConfig.SERVER_URL)
                     // need for interceptors
                     .client(getBasicAuthClient("", "", false))
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
         }
         return retrofit;

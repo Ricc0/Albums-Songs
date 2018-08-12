@@ -23,7 +23,7 @@ public interface AcademyApi {
     Completable registration(@Body User user);
 
     @GET("user")
-    Call<User> getUser();
+    Completable getUser();
 
     @GET("albums")
     Call<Albums> getAlbums();

@@ -25,6 +25,10 @@ import com.google.gson.JsonObject;
 
 import java.io.IOException;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -59,36 +63,14 @@ public class AuthFragment extends Fragment {
                         true
                 );
 
-                ApiUtils.getApiService(true).getUser().enqueue(new retrofit2.Callback<User>() {
-                    Handler mHandler = new Handler(getActivity().getMainLooper());
-
-                    @Override
-
-                    public void onResponse(retrofit2.Call<User> call, final retrofit2.Response<User> response) {
-                        mHandler.post(() -> {
-                            Log.d(TAG, "onResponse: " + response.code());
-                            if (!response.isSuccessful()) {
-
-                                showMessage(R.string.auth_error);
-                                getFragmentManager().popBackStack();
-
-                            } else {
-                                try {
-                                    User user = new User(response.body().getData().getEmail(), response.body().getData().getName(), "");
-                                    startActivity(new Intent(getActivity(), AlbumsActivity.class));
-                                    getActivity().finish();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(retrofit2.Call<User> call, Throwable t) {
-                        mHandler.post(() -> showMessage(R.string.request_error));
-                    }
-                });
+                ApiUtils.getApiService(true)
+                        .getUser()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                                startActivity(new Intent(getActivity(), AlbumsActivity.class));
+                                getActivity().finish();
+                        }, throwable -> showMessage(R.string.request_error));
             } else {
 
                 if (!isEmailValid()) {
@@ -172,5 +154,4 @@ public class AuthFragment extends Fragment {
         mRegister = null;
         user = null;
     }
-
 }
