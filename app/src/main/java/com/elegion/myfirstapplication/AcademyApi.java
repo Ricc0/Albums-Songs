@@ -7,9 +7,11 @@ import com.elegion.myfirstapplication.model.Songs;
 import com.elegion.myfirstapplication.model.User;
 
 import io.reactivex.Completable;
+import io.reactivex.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -23,7 +25,7 @@ public interface AcademyApi {
     Completable registration(@Body User user);
 
     @GET("user")
-    Completable getUser();
+    Single<User> getUser(@Header("Authorization") String credentials);
 
     @GET("albums")
     Call<Albums> getAlbums();

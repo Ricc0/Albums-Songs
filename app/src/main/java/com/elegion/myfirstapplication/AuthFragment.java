@@ -2,13 +2,10 @@ package com.elegion.myfirstapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,25 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.elegion.myfirstapplication.albums.AlbumsActivity;
 import com.elegion.myfirstapplication.model.User;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import java.io.IOException;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import retrofit2.Retrofit;
-
-import static android.content.ContentValues.TAG;
+import okhttp3.Credentials;
 
 public class AuthFragment extends Fragment {
     private AutoCompleteTextView mEmail;
@@ -63,14 +46,20 @@ public class AuthFragment extends Fragment {
                         true
                 );
 
+                String credentials = Credentials.basic(mEmail.getText().toString(), mPassword.getText().toString());
+
                 ApiUtils.getApiService(true)
-                        .getUser()
+                        .getUser(credentials)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(() -> {
-                                startActivity(new Intent(getActivity(), AlbumsActivity.class));
-                                getActivity().finish();
-                        }, throwable -> showMessage(R.string.request_error));
+                        .subscribe(dataBean -> {
+                            User user = new User(dataBean.getData().getEmail(), dataBean.getData().getName(), "");
+                            Intent startProfileIntent = new Intent(getActivity(), ProfileActivity.class);
+                            startProfileIntent.putExtra(ProfileActivity.USER_KEY, user);
+                            startActivity(startProfileIntent);
+                            getActivity().finish();
+                        }, throwable -> showMessage(R.string.auth_error));
+
             } else {
 
                 if (!isEmailValid()) {
