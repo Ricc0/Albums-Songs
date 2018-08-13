@@ -28,7 +28,7 @@ public interface AcademyApi {
     Single<User> getUser(@Header("Authorization") String credentials);
 
     @GET("albums")
-    Call<Albums> getAlbums();
+    Single<Albums> getAlbums();
 
     @GET("albums/{id}")
     Call<Album> getAlbum(@Path("id") int id);

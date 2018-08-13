@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.elegion.myfirstapplication.albums.AlbumsActivity;
 import com.elegion.myfirstapplication.model.User;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -48,7 +49,8 @@ public class AuthFragment extends Fragment {
 
                 String credentials = Credentials.basic(mEmail.getText().toString(), mPassword.getText().toString());
 
-                ApiUtils.getApiService(true)
+                // Example for authorization and get User data on Profile Activity.
+                /*ApiUtils.getApiService(true)
                         .getUser(credentials)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -58,7 +60,17 @@ public class AuthFragment extends Fragment {
                             startProfileIntent.putExtra(ProfileActivity.USER_KEY, user);
                             startActivity(startProfileIntent);
                             getActivity().finish();
-                        }, throwable -> showMessage(R.string.auth_error));
+                        }, throwable -> showMessage(R.string.auth_error));*/
+
+                // Example for get albums from the server
+                ApiUtils.getApiService(true)
+                        .getUser(credentials)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(user -> {
+                            startActivity(new Intent(getActivity(), AlbumsActivity.class));
+                            getActivity().finish();
+                        }, throwable -> showMessage(R.string.request_error));
 
             } else {
 
