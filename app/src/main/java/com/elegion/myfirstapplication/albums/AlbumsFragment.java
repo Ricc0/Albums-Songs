@@ -12,10 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elegion.myfirstapplication.ApiUtils;
+import com.elegion.myfirstapplication.App;
 import com.elegion.myfirstapplication.R;
 import com.elegion.myfirstapplication.album.DetailAlbumFragment;
+import com.elegion.myfirstapplication.db.MusicDao;
+import com.elegion.myfirstapplication.model.Album;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -77,17 +84,37 @@ public class AlbumsFragment extends Fragment implements SwipeRefreshLayout.OnRef
         ApiUtils.getApiService(false)
                 .getAlbums()
                 .subscribeOn(Schedulers.io())
+                .doOnSuccess(new Consumer<List<Album>>() {
+                    @Override
+                    public void accept(List<Album> albums) throws Exception {
+                        getMusicDao().insertAlbums(albums);
+                    }
+                })
+                .onErrorReturn(new Function<Throwable, List<Album>>() {
+                    @Override
+                    public List<Album> apply(Throwable throwable) throws Exception {
+                        if (ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass())) {
+                            return getMusicDao().getAlbums();
+                        } else return null;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mRefresher.setRefreshing(true))
                 .doFinally(() -> mRefresher.setRefreshing(false))
-                .subscribe(albums -> {
-                    mErrorView.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
-                    mAlbumAdapter.addData(albums, true);
-                }, throwable -> {
-                    mErrorView.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
-
-                });
+                .subscribe(
+                        albums -> {
+                            mErrorView.setVisibility(View.GONE);
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            mAlbumAdapter.addData(albums, true);
+                        },
+                        throwable -> {
+                            mErrorView.setVisibility(View.VISIBLE);
+                            mRecyclerView.setVisibility(View.GONE);
+                        });
     }
+
+    private MusicDao getMusicDao() {
+        return ((App) getActivity().getApplication()).getDatabase().getMusicDao();
+    }
+
 }
