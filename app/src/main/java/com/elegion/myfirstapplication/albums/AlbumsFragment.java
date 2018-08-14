@@ -14,17 +14,9 @@ import android.view.ViewGroup;
 import com.elegion.myfirstapplication.ApiUtils;
 import com.elegion.myfirstapplication.R;
 import com.elegion.myfirstapplication.album.DetailAlbumFragment;
-import com.elegion.myfirstapplication.model.Albums;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * @author Azret Magometov
@@ -91,7 +83,7 @@ public class AlbumsFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 .subscribe(albums -> {
                     mErrorView.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-                    mAlbumAdapter.addData(albums.getData(), true);
+                    mAlbumAdapter.addData(albums, true);
                 }, throwable -> {
                     mErrorView.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.GONE);

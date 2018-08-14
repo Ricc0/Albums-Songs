@@ -1,10 +1,10 @@
 package com.elegion.myfirstapplication;
 
 import com.elegion.myfirstapplication.model.Album;
-import com.elegion.myfirstapplication.model.Albums;
 import com.elegion.myfirstapplication.model.Song;
-import com.elegion.myfirstapplication.model.Songs;
 import com.elegion.myfirstapplication.model.User;
+
+import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -28,13 +28,13 @@ public interface AcademyApi {
     Single<User> getUser(@Header("Authorization") String credentials);
 
     @GET("albums")
-    Single<Albums> getAlbums();
+    Single<List<Album>> getAlbums();
 
     @GET("albums/{id}")
     Single<Album> getAlbum(@Path("id") int id);
 
     @GET("songs")
-    Single<Songs> getSongs();
+    Single<List<Song>> getSongs();
 
     @GET("songs/{id}")
     Call<Song> getSong(@Path("id") int id);

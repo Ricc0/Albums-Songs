@@ -2,25 +2,14 @@ package com.elegion.myfirstapplication.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by marat.taychinov
  */
 
-public class Album {
-    @SerializedName("data")
-    private DataBean mData;
-
-    public DataBean getData() {
-        return mData;
-    }
-
-    public void setData(DataBean data) {
-        mData = data;
-    }
-
-    public static class DataBean {
+public class Album implements Serializable{
         @SerializedName("id")
         private int mId;
         @SerializedName("name")
@@ -28,7 +17,7 @@ public class Album {
         @SerializedName("release_date")
         private String mReleaseDate;
         @SerializedName("songs")
-        private List<Song.DataBean> mSongs;
+        private List<Song> mSongs;
 
         public int getId() {
             return mId;
@@ -54,12 +43,11 @@ public class Album {
             mReleaseDate = releaseDate;
         }
 
-        public List<Song.DataBean> getSongs() {
+        public List<Song> getSongs() {
             return mSongs;
         }
 
-        public void setSongs(List<Song.DataBean> songs) {
+        public void setSongs(List<Song> songs) {
             mSongs = songs;
         }
-    }
 }
