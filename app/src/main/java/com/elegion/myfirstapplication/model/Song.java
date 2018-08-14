@@ -1,40 +1,53 @@
 package com.elegion.myfirstapplication.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 
 /**
  * Created by marat.taychinov
  */
 
-public class Song {
-        @SerializedName("id")
-        private int mId;
-        @SerializedName("name")
-        private String mName;
-        @SerializedName("duration")
-        private String mDuration;
+@Entity
+public class Song implements Serializable{
+    @SerializedName("id")
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    private int mId;
 
-        public int getId() {
-            return mId;
-        }
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    private String mName;
 
-        public void setId(int id) {
-            mId = id;
-        }
+    @SerializedName("duration")
+    @ColumnInfo(name = "duration")
+    private String mDuration;
 
-        public String getName() {
-            return mName;
-        }
+    public int getId() {
+        return mId;
+    }
 
-        public void setName(String name) {
-            mName = name;
-        }
+    public void setId(int id) {
+        mId = id;
+    }
 
-        public String getDuration() {
-            return mDuration;
-        }
+    public String getName() {
+        return mName;
+    }
 
-        public void setDuration(String duration) {
-            mDuration = duration;
-        }
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getDuration() {
+        return mDuration;
+    }
+
+    public void setDuration(String duration) {
+        mDuration = duration;
+    }
 }
