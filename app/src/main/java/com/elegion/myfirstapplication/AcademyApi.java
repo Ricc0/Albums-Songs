@@ -31,10 +31,10 @@ public interface AcademyApi {
     Single<Albums> getAlbums();
 
     @GET("albums/{id}")
-    Call<Album> getAlbum(@Path("id") int id);
+    Single<Album> getAlbum(@Path("id") int id);
 
     @GET("songs")
-    Call<Songs> getSongs();
+    Single<Songs> getSongs();
 
     @GET("songs/{id}")
     Call<Song> getSong(@Path("id") int id);
