@@ -25,7 +25,9 @@ public class AlbumSong {
     public AlbumSong() {
     }
 
-    public AlbumSong(int i, AlbumSong albumSong) {
+    public AlbumSong(int albumId, int songId) {
+        mAlbumId = albumId;
+        mSongId = songId;
     }
 
     public AlbumSong(int id, int albumId, int songId) {

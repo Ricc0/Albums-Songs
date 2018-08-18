@@ -31,7 +31,7 @@ public class Album implements Serializable{
         private String mReleaseDate;
 
         @SerializedName("songs")
-        @Ignore
+        @Ignore //этот список вы должны сохранять руками, по примеру Азрета, когда получаете объект альбома с сервера на экране отображения альбома
         private List<Song> mSongs;
 
         public int getId() {

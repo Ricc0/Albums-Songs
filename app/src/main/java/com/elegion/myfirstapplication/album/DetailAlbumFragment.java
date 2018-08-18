@@ -12,10 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.elegion.myfirstapplication.ApiUtils;
+import com.elegion.myfirstapplication.App;
 import com.elegion.myfirstapplication.R;
+import com.elegion.myfirstapplication.db.MusicDao;
 import com.elegion.myfirstapplication.model.Album;
+import com.elegion.myfirstapplication.model.AlbumSong;
+import com.elegion.myfirstapplication.model.Song;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -83,6 +91,24 @@ public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.
         ApiUtils.getApiService(false)
                 .getAlbum(mAlbum.getId())
                 .subscribeOn(Schedulers.io())
+                .doOnSuccess(new Consumer<Album>() {
+                    @Override
+                    public void accept(Album album) throws Exception {
+                        getMusicDao().insertAlbum(album);
+                        getMusicDao().insertSongs(album.getSongs());
+                        for(Song song : album.getSongs()) {
+                            getMusicDao().setLinkAlbumSongs(new AlbumSong(album.getId(), song.getId()));
+                        }
+                    }
+                })
+                .onErrorReturn(throwable -> {
+                    if (ApiUtils.NETWORK_EXCEPTIONS.contains(throwable.getClass())) {
+                        Album album = getMusicDao().getAlbumWithId(mAlbum.getId());
+                        List<Song> songs = getMusicDao().getSongsFromAlbum(mAlbum.getId());
+                        album.setSongs(songs);
+                        return album;
+                    } else return null;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(disposable -> mRefresher.setRefreshing(true))
                 .doFinally(() -> mRefresher.setRefreshing(false))
@@ -94,5 +120,9 @@ public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.
                     mErrorView.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.GONE);
                 });
+    }
+
+    private MusicDao getMusicDao() {
+        return ((App) getActivity().getApplication()).getDatabase().getMusicDao();
     }
 }
