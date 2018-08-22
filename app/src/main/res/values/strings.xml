@@ -24,5 +24,9 @@
     <string name="response_code_400">Ошибка валидации</string>
     <string name="response_code_404">Альбома не существует</string>
     <string name="response_code_500">Внутренняя ошибка сервера</string>
+    <string name="show_comments">Комментарии</string>
+    <string name="et_comment_hint">your comment...</string>
+    <string name="btn_send_text">send</string>
+    <string name="send_message">Send message</string>
 
 </resources>

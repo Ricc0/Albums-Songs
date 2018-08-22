@@ -4,16 +4,22 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.elegion.myfirstapplication.ApiUtils;
 import com.elegion.myfirstapplication.App;
 import com.elegion.myfirstapplication.R;
+import com.elegion.myfirstapplication.albums.AlbumsAdapter;
+import com.elegion.myfirstapplication.comments.CommentsFragment;
 import com.elegion.myfirstapplication.db.MusicDao;
 import com.elegion.myfirstapplication.model.Album;
 import com.elegion.myfirstapplication.model.AlbumSong;
@@ -23,7 +29,6 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -48,11 +53,29 @@ public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.
         return fragment;
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fr_recycler, container, false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.comments_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionComments:
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, CommentsFragment.newInstance(mAlbum.getId()))
+                        .addToBackStack(DetailAlbumFragment.class.getSimpleName())
+                        .commit();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -77,14 +100,13 @@ public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.
         onRefresh();
     }
 
-
     @Override
     public void onRefresh() {
         mRefresher.post(() -> {
+            mRefresher.setRefreshing(true);
             getAlbum();
         });
     }
-
 
     private void getAlbum() {
 
@@ -96,7 +118,7 @@ public class DetailAlbumFragment extends Fragment implements SwipeRefreshLayout.
                     public void accept(Album album) throws Exception {
                         getMusicDao().insertAlbum(album);
                         getMusicDao().insertSongs(album.getSongs());
-                        for(Song song : album.getSongs()) {
+                        for (Song song : album.getSongs()) {
                             getMusicDao().setLinkAlbumSongs(new AlbumSong(album.getId(), song.getId()));
                         }
                     }

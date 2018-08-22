@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 
 import com.elegion.myfirstapplication.model.Album;
 import com.elegion.myfirstapplication.model.AlbumSong;
+import com.elegion.myfirstapplication.model.Comment;
 import com.elegion.myfirstapplication.model.Song;
 
 import java.util.List;
@@ -26,6 +27,9 @@ public interface MusicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long setLinkAlbumSongs(AlbumSong linkAlbumSongs);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertComments(List<Comment> comments);
 
     //albums
 
@@ -59,5 +63,22 @@ public interface MusicDao {
     //получить список песен переданного id альбома
     @Query("SELECT * FROM song sn, albumsong asg WHERE sn.id = asg.song_id and asg.album_id = :albumId")
     List<Song> getSongsFromAlbum(int albumId);
+
+    //comments
+
+    @Query("SELECT * FROM comment")
+    List<Comment> getComments();
+
+    //удалить песню
+    @Delete
+    void deleteComment(Comment comment);
+
+    //удалить песню по id
+    @Query("DELETE FROM comment where id = :commentId")
+    int deleteCommentById(int commentId);
+
+    //получить список комментариев переданного id альбома
+    @Query("SELECT * FROM comment where album_id = :albumId")
+    List<Comment> getAlbumComments(int albumId);
 
 }

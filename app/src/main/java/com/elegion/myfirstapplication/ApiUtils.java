@@ -82,4 +82,8 @@ public class ApiUtils {
         }
         return api;
     }
+
+    public static Gson getGson() {
+        return gson;
+    }
 }

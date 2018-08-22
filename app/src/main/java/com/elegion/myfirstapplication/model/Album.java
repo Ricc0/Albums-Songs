@@ -15,54 +15,56 @@ import java.util.List;
  */
 
 @Entity
-public class Album implements Serializable{
+public class Album implements Serializable {
 
-        @SerializedName("id")
-        @PrimaryKey
-        @ColumnInfo(name = "id")
-        private int mId;
+    @SerializedName("id")
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    private int mId;
 
-        @SerializedName("name")
-        @ColumnInfo(name = "name")
-        private String mName;
+    @SerializedName("name")
+    @ColumnInfo(name = "name")
+    private String mName;
 
-        @SerializedName("release_date")
-        @ColumnInfo(name = "release")
-        private String mReleaseDate;
+    @SerializedName("release_date")
+    @ColumnInfo(name = "release")
+    private String mReleaseDate;
 
-        @SerializedName("songs")
-        @Ignore //этот список вы должны сохранять руками, по примеру Азрета, когда получаете объект альбома с сервера на экране отображения альбома
-        private List<Song> mSongs;
+    @SerializedName("songs")
+    @Ignore
+    //этот список вы должны сохранять руками, по примеру Азрета, когда получаете объект альбома с сервера на экране отображения альбома
+    private List<Song> mSongs;
 
-        public int getId() {
-            return mId;
-        }
+    public int getId() {
+        return mId;
+    }
 
-        public void setId(int id) {
-            mId = id;
-        }
+    public void setId(int id) {
+        mId = id;
+    }
 
-        public String getName() {
-            return mName;
-        }
+    public String getName() {
+        return mName;
+    }
 
-        public void setName(String name) {
-            mName = name;
-        }
+    public void setName(String name) {
+        mName = name;
+    }
 
-        public String getReleaseDate() {
-            return mReleaseDate;
-        }
+    public String getReleaseDate() {
+        return mReleaseDate;
+    }
 
-        public void setReleaseDate(String releaseDate) {
-            mReleaseDate = releaseDate;
-        }
+    public void setReleaseDate(String releaseDate) {
+        mReleaseDate = releaseDate;
+    }
 
-        public List<Song> getSongs() {
-            return mSongs;
-        }
+    public List<Song> getSongs() {
+        return mSongs;
+    }
 
-        public void setSongs(List<Song> songs) {
-            mSongs = songs;
-        }
+    public void setSongs(List<Song> songs) {
+        mSongs = songs;
+    }
+
 }
