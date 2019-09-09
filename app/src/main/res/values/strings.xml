@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyFirstApplication</string>
+    <string name="Songs">MyFirstApplication</string>
     <string name="email_hint">Логин</string>
     <string name="password">Пароль</string>
     <string name="password_enter">Введите пароль</string>
